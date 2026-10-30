@@ -1,5 +1,5 @@
 :root {
-  --bg-gradient: linear-gradient(135deg, #9a3412 0%, #ea580c 50%, #f97316 100%);
+  --bg-gradient: linear-gradient(135deg, #064e3b 0%, #059669 50%, #10b981 100%);
   --card-bg: rgba(23, 27, 44, 0.85);
   --card-border: rgba(255, 255, 255, 0.08);
   --card-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05);
