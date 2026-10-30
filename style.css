@@ -321,18 +321,6 @@ body {
   grid-column: span 2;
 }
 
-/* Footer note */
-.calc-footer {
-  text-align: center;
-  font-size: 0.75rem;
-  color: #64748b;
-  padding-top: 0.25rem;
-}
-
-.calc-footer strong {
-  color: #94a3b8;
-}
-
 /* History Panel Overlay */
 .history-panel {
   position: absolute;
