@@ -5,12 +5,26 @@ let currentOperator = null;
 let expressionHistory = '';
 let resetInputOnNextDigit = false;
 let toastTimeout = null;
+let calculationHistory = [];
+
+try {
+  const saved = localStorage.getItem('calc_history');
+  if (saved) calculationHistory = JSON.parse(saved);
+} catch (e) {
+  calculationHistory = [];
+}
 
 // DOM Elements
 const currentDisplay = document.getElementById('current');
 const historyDisplay = document.getElementById('history');
 const toastElement = document.getElementById('toast');
 const keypad = document.querySelector('.keypad');
+const historyPanel = document.getElementById('history-panel');
+const historyToggleBtn = document.getElementById('history-toggle');
+const historyCountBadge = document.getElementById('history-count');
+const historyList = document.getElementById('history-list');
+const clearHistoryBtn = document.getElementById('clear-history-btn');
+const closeHistoryBtn = document.getElementById('close-history-btn');
 
 /**
  * Format number for clean display (handles floating point artifacts)
@@ -175,12 +189,17 @@ function evaluate() {
 
   const result = compute(previousOperand, currentOperand, currentOperator);
   const opSymbol = currentOperator === '/' ? '÷' : (currentOperator === '-' ? '−' : '+');
+  const fullExpr = `${previousOperand} ${opSymbol} ${currentOperand}`;
   
-  expressionHistory = `${previousOperand} ${opSymbol} ${currentOperand} =`;
+  expressionHistory = `${fullExpr} =`;
   currentOperand = result.toString();
   previousOperand = null;
   currentOperator = null;
   resetInputOnNextDigit = true;
+
+  if (result !== 'Cannot divide by 0' && result !== 'Error') {
+    addHistoryRecord(fullExpr, currentOperand);
+  }
 
   updateDisplay();
 }
@@ -264,8 +283,147 @@ function flashButton(selector) {
   }
 }
 
+/**
+ * Render history panel list
+ */
+function renderHistory() {
+  if (historyCountBadge) {
+    historyCountBadge.textContent = calculationHistory.length;
+    historyCountBadge.style.display = calculationHistory.length > 0 ? 'inline-block' : 'none';
+  }
+
+  if (!historyList) return;
+
+  if (calculationHistory.length === 0) {
+    historyList.innerHTML = `
+      <div class="history-empty">
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polyline points="12 6 12 12 16 14"></polyline>
+        </svg>
+        <p>No calculations yet</p>
+        <span>Completed calculations will appear here</span>
+      </div>
+    `;
+    return;
+  }
+
+  historyList.innerHTML = calculationHistory
+    .map(
+      (item, index) => `
+    <div class="history-item" data-index="${index}" role="button" tabindex="0" title="Click to recall ${item.result}">
+      <div class="history-item-expr">${item.expression} =</div>
+      <div class="history-item-result">${item.result}</div>
+    </div>
+  `
+    )
+    .join('');
+}
+
+/**
+ * Add an item to calculation history
+ */
+function addHistoryRecord(expression, result) {
+  calculationHistory.unshift({ expression, result, timestamp: Date.now() });
+  if (calculationHistory.length > 50) calculationHistory.pop();
+
+  try {
+    localStorage.setItem('calc_history', JSON.stringify(calculationHistory));
+  } catch (e) {}
+
+  renderHistory();
+}
+
+/**
+ * Clear calculation history
+ */
+function clearHistory() {
+  calculationHistory = [];
+  try {
+    localStorage.removeItem('calc_history');
+  } catch (e) {}
+  renderHistory();
+  showToast('History cleared');
+}
+
+/**
+ * Toggle history panel visibility
+ */
+function toggleHistoryPanel(show) {
+  if (!historyPanel) return;
+  const isOpen = historyPanel.classList.contains('open');
+  const shouldOpen = show !== undefined ? show : !isOpen;
+
+  if (shouldOpen) {
+    historyPanel.classList.add('open');
+    historyPanel.setAttribute('aria-hidden', 'false');
+  } else {
+    historyPanel.classList.remove('open');
+    historyPanel.setAttribute('aria-hidden', 'true');
+  }
+}
+
+/**
+ * Recall result from history
+ */
+function recallHistoryItem(index) {
+  const item = calculationHistory[index];
+  if (!item) return;
+
+  currentOperand = item.result;
+  previousOperand = null;
+  currentOperator = null;
+  expressionHistory = '';
+  resetInputOnNextDigit = true;
+  updateDisplay();
+  toggleHistoryPanel(false);
+  showToast(`Recalled ${item.result}`);
+}
+
+// History Event Listeners
+if (historyToggleBtn) {
+  historyToggleBtn.addEventListener('click', () => toggleHistoryPanel());
+}
+if (closeHistoryBtn) {
+  closeHistoryBtn.addEventListener('click', () => toggleHistoryPanel(false));
+}
+if (clearHistoryBtn) {
+  clearHistoryBtn.addEventListener('click', clearHistory);
+}
+if (historyList) {
+  historyList.addEventListener('click', (e) => {
+    const item = e.target.closest('.history-item');
+    if (!item) return;
+    const index = parseInt(item.dataset.index, 10);
+    recallHistoryItem(index);
+  });
+  historyList.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      const item = e.target.closest('.history-item');
+      if (!item) return;
+      e.preventDefault();
+      const index = parseInt(item.dataset.index, 10);
+      recallHistoryItem(index);
+    }
+  });
+}
+
 // Keyboard Support
 window.addEventListener('keydown', (e) => {
+  // Toggle History with 'h' or 'H'
+  if ((e.key === 'h' || e.key === 'H') && !e.metaKey && !e.ctrlKey) {
+    e.preventDefault();
+    toggleHistoryPanel();
+    return;
+  }
+
+  // Close history panel on Escape if open
+  if (e.key === 'Escape' && historyPanel && historyPanel.classList.contains('open')) {
+    e.preventDefault();
+    toggleHistoryPanel(false);
+    return;
+  }
+
   // Check if user attempts multiplication via keyboard (* or x or X)
   if (e.key === '*' || e.key === 'x' || e.key === 'X') {
     e.preventDefault();
@@ -334,5 +492,6 @@ window.addEventListener('keydown', (e) => {
   }
 });
 
-// Initial display setup
+// Initial display and history setup
 updateDisplay();
+renderHistory();

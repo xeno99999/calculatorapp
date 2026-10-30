@@ -16,10 +16,19 @@
         <span class="app-name">Calc</span>
         <span class="badge">No Multiplication</span>
       </div>
-      <div class="header-dots">
-        <span class="dot red"></span>
-        <span class="dot yellow"></span>
-        <span class="dot green"></span>
+      <div class="header-controls">
+        <button type="button" id="history-toggle" class="history-toggle-btn" aria-label="Toggle history" title="Calculation History (H)">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12 6 12 12 16 14"></polyline>
+          </svg>
+          <span id="history-count" class="history-badge">0</span>
+        </button>
+        <div class="header-dots">
+          <span class="dot red"></span>
+          <span class="dot yellow"></span>
+          <span class="dot green"></span>
+        </div>
       </div>
     </header>
 
@@ -61,6 +70,26 @@
     <footer class="calc-footer">
       <span>Supports <strong>+</strong>, <strong>−</strong>, and <strong>÷</strong></span>
     </footer>
+
+    <!-- History Panel Overlay -->
+    <div id="history-panel" class="history-panel" aria-hidden="true">
+      <div class="history-panel-header">
+        <div class="history-panel-title">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12 6 12 12 16 14"></polyline>
+          </svg>
+          <span>History</span>
+        </div>
+        <div class="history-panel-actions">
+          <button type="button" id="clear-history-btn" class="history-action-btn" title="Clear history">Clear</button>
+          <button type="button" id="close-history-btn" class="history-close-btn" aria-label="Close history" title="Close (Escape)">✕</button>
+        </div>
+      </div>
+      <div id="history-list" class="history-list" role="list">
+        <!-- Dynamically populated -->
+      </div>
+    </div>
   </div>
 
   <script src="script.js"></script>
