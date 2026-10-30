@@ -22,8 +22,8 @@
   --btn-op-active: #6d28d9;
   --btn-op-text: #ffffff;
 
-  --btn-equals-bg: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
-  --btn-equals-hover: linear-gradient(135deg, #0891b2 0%, #2563eb 100%);
+  --btn-equals-bg: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  --btn-equals-hover: linear-gradient(135deg, #f87171 0%, #ef4444 100%);
   --btn-equals-text: #ffffff;
 
   --toast-bg: rgba(239, 68, 68, 0.9);
@@ -406,7 +406,7 @@ body {
   background: var(--btn-equals-bg);
   color: var(--btn-equals-text);
   font-size: 1.6rem;
-  box-shadow: 0 4px 14px rgba(59, 130, 246, 0.4);
+  box-shadow: 0 4px 14px rgba(239, 68, 68, 0.4);
 }
 
 .btn-equals:hover {
