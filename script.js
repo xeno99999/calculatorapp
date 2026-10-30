@@ -204,7 +204,7 @@ function setBase(newBase, convertCurrent = true) {
   }
 
   updateDisplay();
-  showToast(currentBase === 2 ? 'Switched to Base 2 (Binary)' : 'Switched to Base 10 (Decimal)');
+  showToast(currentBase === 2 ? 'Switched to BIN' : 'Switched to DEC');
 }
 
 /**
@@ -268,9 +268,9 @@ function showToast(message) {
  * Handle number / decimal input
  */
 function appendNumber(digit) {
-  // If in Base 2, only '0', '1', and '.' are allowed
+  // If in BIN mode, only '0', '1', and '.' are allowed
   if (currentBase === 2 && digit !== '0' && digit !== '1' && digit !== '.') {
-    showToast('Only 0 and 1 are valid in Base 2');
+    showToast('Only 0 and 1 are valid in BIN');
     return;
   }
 
@@ -635,10 +635,10 @@ window.addEventListener('keydown', (e) => {
     return;
   }
 
-  // Check digits in Base 2 mode
+  // Check digits in BIN mode
   if (currentBase === 2 && /^[2-9]$/.test(e.key)) {
     e.preventDefault();
-    showToast('Digits 2–9 are disabled in Base 2');
+    showToast('Digits 2–9 are disabled in BIN');
     return;
   }
 
