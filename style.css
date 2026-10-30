@@ -1,0 +1,294 @@
+:root {
+  --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #311042 100%);
+  --card-bg: rgba(23, 27, 44, 0.85);
+  --card-border: rgba(255, 255, 255, 0.08);
+  --card-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05);
+
+  --display-bg: rgba(10, 13, 24, 0.7);
+  --display-text: #f8fafc;
+  --display-history: #94a3b8;
+
+  --btn-num-bg: rgba(255, 255, 255, 0.05);
+  --btn-num-hover: rgba(255, 255, 255, 0.1);
+  --btn-num-active: rgba(255, 255, 255, 0.16);
+  --btn-num-text: #f1f5f9;
+
+  --btn-action-bg: rgba(148, 163, 184, 0.12);
+  --btn-action-hover: rgba(148, 163, 184, 0.2);
+  --btn-action-text: #cbd5e1;
+
+  --btn-op-bg: #8b5cf6;
+  --btn-op-hover: #7c3aed;
+  --btn-op-active: #6d28d9;
+  --btn-op-text: #ffffff;
+
+  --btn-equals-bg: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
+  --btn-equals-hover: linear-gradient(135deg, #0891b2 0%, #2563eb 100%);
+  --btn-equals-text: #ffffff;
+
+  --toast-bg: rgba(239, 68, 68, 0.9);
+  --toast-text: #ffffff;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-gradient);
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  padding: 1.5rem;
+  color: #fff;
+}
+
+.calculator-card {
+  width: 100%;
+  max-width: 360px;
+  background: var(--card-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--card-border);
+  border-radius: 28px;
+  box-shadow: var(--card-shadow);
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  user-select: none;
+}
+
+/* Header */
+.calc-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 0.25rem;
+}
+
+.header-title {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.app-name {
+  font-weight: 700;
+  font-size: 1.15rem;
+  letter-spacing: -0.02em;
+  color: #f8fafc;
+}
+
+.badge {
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 0.2rem 0.55rem;
+  border-radius: 9999px;
+  background: rgba(239, 68, 68, 0.15);
+  color: #fca5a5;
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.header-dots {
+  display: flex;
+  gap: 6px;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.dot.red { background-color: #ef4444; }
+.dot.yellow { background-color: #f59e0b; }
+.dot.green { background-color: #10b981; }
+
+/* Display Container */
+.display-container {
+  position: relative;
+  background: var(--display-bg);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 18px;
+  padding: 1.2rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  min-height: 110px;
+  overflow: hidden;
+}
+
+.display-history {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.9rem;
+  color: var(--display-history);
+  min-height: 1.3rem;
+  text-align: right;
+  overflow-x: auto;
+  white-space: nowrap;
+  scrollbar-width: none;
+}
+
+.display-history::-webkit-scrollbar {
+  display: none;
+}
+
+.display-current {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 2.35rem;
+  font-weight: 600;
+  color: var(--display-text);
+  text-align: right;
+  line-height: 1.2;
+  overflow-x: auto;
+  white-space: nowrap;
+  scrollbar-width: none;
+  transition: transform 0.1s ease;
+}
+
+.display-current::-webkit-scrollbar {
+  display: none;
+}
+
+/* Toast warning */
+.toast-message {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-35px);
+  background: var(--toast-bg);
+  color: var(--toast-text);
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.35rem 0.75rem;
+  border-radius: 9999px;
+  pointer-events: none;
+  opacity: 0;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease;
+  white-space: nowrap;
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+}
+
+.toast-message.show {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+}
+
+/* Keypad Grid */
+.keypad {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.7rem;
+}
+
+.btn {
+  appearance: none;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  height: 60px;
+  border-radius: 16px;
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  font-size: 1.25rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.12s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+}
+
+.btn:active,
+.btn.pressed {
+  transform: scale(0.94);
+}
+
+/* Number buttons */
+.btn-num {
+  background: var(--btn-num-bg);
+  color: var(--btn-num-text);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 1.35rem;
+}
+
+.btn-num:hover {
+  background: var(--btn-num-hover);
+}
+
+.btn-num:active,
+.btn-num.pressed {
+  background: var(--btn-num-active);
+}
+
+/* Action buttons (Clear, Backspace, Negate) */
+.btn-action {
+  background: var(--btn-action-bg);
+  color: var(--btn-action-text);
+  font-size: 1.05rem;
+  letter-spacing: -0.01em;
+}
+
+.btn-action:hover {
+  background: var(--btn-action-hover);
+}
+
+/* Operator buttons */
+.btn-operator {
+  background: var(--btn-op-bg);
+  color: var(--btn-op-text);
+  font-size: 1.4rem;
+}
+
+.btn-operator:hover {
+  background: var(--btn-op-hover);
+}
+
+.btn-operator:active,
+.btn-operator.pressed {
+  background: var(--btn-op-active);
+}
+
+.btn-operator.active-op {
+  box-shadow: 0 0 0 2px #fff, 0 0 15px rgba(139, 92, 246, 0.6);
+  background: #a78bfa;
+}
+
+/* Equals button */
+.btn-equals {
+  grid-column: 4;
+  grid-row: 4 / span 2;
+  height: 100%;
+  background: var(--btn-equals-bg);
+  color: var(--btn-equals-text);
+  font-size: 1.6rem;
+  box-shadow: 0 4px 14px rgba(59, 130, 246, 0.4);
+}
+
+.btn-equals:hover {
+  background: var(--btn-equals-hover);
+}
+
+/* Zero button span */
+.btn-zero {
+  grid-column: span 2;
+}
+
+/* Footer note */
+.calc-footer {
+  text-align: center;
+  font-size: 0.75rem;
+  color: #64748b;
+  padding-top: 0.25rem;
+}
+
+.calc-footer strong {
+  color: #94a3b8;
+}

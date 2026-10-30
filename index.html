@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Simple Calculator</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="calculator-card">
+    <header class="calc-header">
+      <div class="header-title">
+        <span class="app-name">Calc</span>
+        <span class="badge">No Multiplication</span>
+      </div>
+      <div class="header-dots">
+        <span class="dot red"></span>
+        <span class="dot yellow"></span>
+        <span class="dot green"></span>
+      </div>
+    </header>
+
+    <div class="display-container">
+      <div id="history" class="display-history" aria-label="Calculation history">&nbsp;</div>
+      <div id="current" class="display-current" aria-label="Current value">0</div>
+      <div id="toast" class="toast-message" role="alert" aria-live="polite">Multiplication is disabled</div>
+    </div>
+
+    <div class="keypad">
+      <!-- Row 1: Utility & Division -->
+      <button type="button" class="btn btn-action" data-action="clear" title="Clear (Escape)">AC</button>
+      <button type="button" class="btn btn-action" data-action="delete" title="Backspace (⌫)">⌫</button>
+      <button type="button" class="btn btn-action" data-action="negate" title="Toggle sign">±</button>
+      <button type="button" class="btn btn-operator" data-action="divide" title="Divide (/)" data-operator="/">÷</button>
+
+      <!-- Row 2: 7, 8, 9, Minus -->
+      <button type="button" class="btn btn-num" data-number="7">7</button>
+      <button type="button" class="btn btn-num" data-number="8">8</button>
+      <button type="button" class="btn btn-num" data-number="9">9</button>
+      <button type="button" class="btn btn-operator" data-action="subtract" title="Subtract (-)" data-operator="-">−</button>
+
+      <!-- Row 3: 4, 5, 6, Plus -->
+      <button type="button" class="btn btn-num" data-number="4">4</button>
+      <button type="button" class="btn btn-num" data-number="5">5</button>
+      <button type="button" class="btn btn-num" data-number="6">6</button>
+      <button type="button" class="btn btn-operator" data-action="add" title="Add (+)" data-operator="+">+</button>
+
+      <!-- Row 4 & 5: 1, 2, 3, Equals, 0, Decimal -->
+      <button type="button" class="btn btn-num" data-number="1">1</button>
+      <button type="button" class="btn btn-num" data-number="2">2</button>
+      <button type="button" class="btn btn-num" data-number="3">3</button>
+      <button type="button" class="btn btn-equals" data-action="equals" title="Calculate (Enter or =)">=</button>
+
+      <button type="button" class="btn btn-num btn-zero" data-number="0">0</button>
+      <button type="button" class="btn btn-num" data-number=".">.</button>
+    </div>
+
+    <footer class="calc-footer">
+      <span>Supports <strong>+</strong>, <strong>−</strong>, and <strong>÷</strong></span>
+    </footer>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
